@@ -42,6 +42,8 @@ class CrudUserController extends Controller
         return redirect("login")->withSuccess('Login details are not valid');
     }
 
+
+
     /**
      * Registration page
      */
@@ -53,6 +55,7 @@ class CrudUserController extends Controller
     /**
      * User submit form register
      */
+
     public function postUser(Request $request)
     {
         $request->validate([
@@ -61,48 +64,51 @@ class CrudUserController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $data = $request->all();
-        $check = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password'])
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
         ]);
 
-        return redirect("login");
+        return redirect("login")->withSuccess('Registration successful! Please log in.');
     }
+
 
     /**
      * View user detail page
      */
-   
-    public function readUser($id) {
+
+    public function readUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
         return view('users.read', ['user' => $user]);
     }
-    
+
 
     /**
      * Delete user by id
      */
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
-    
+
         $user->delete();
-    
+
         return redirect("list")->withSuccess('User deleted successfully!');
     }
-    
+
 
     /**
      * Form update user page
      */
-    public function updateUser($id) {
+    public function updateUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
@@ -113,49 +119,54 @@ class CrudUserController extends Controller
     /**
      * Submit form update user
      */
-    public function postUpdateUser(Request $request, $id) {
+    public function postUpdateUser(Request $request, $id)
+    {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6', // Không bắt buộc nhập lại mật khẩu
         ]);
-    
+
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
-    
+
         $user->name = $request->name;
         $user->email = $request->email;
-    
-        if ($request->password) { 
+
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
-    
+
         $user->save();
-    
+
         return redirect("list")->withSuccess('User updated successfully!');
     }
 
-    
+
 
     /**
      * List of users
      */
-    
-     public function listUser()
-     {
-  
-             $users = User :: all();
-             return view('users.list', ['users' => $users]);
 
-     }
+    public function listUser()
+    {
+        if (!Auth::check()) {
+            return redirect('login')->withErrors(['auth_error' => 'You need to log in first']);
+        }
+
+        $users = User::all();
+        return view('users.list', ['users' => $users]);
+    }
+
 
 
     /**
      * Sign out
      */
-    public function signOut() {
+    public function signOut()
+    {
         Session::flush();
         Auth::logout();
 
