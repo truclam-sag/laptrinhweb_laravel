@@ -3,7 +3,7 @@
 @section('content')
     <main class="signup-form">
         <div class="cotainer">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center g-0">
                 <div class="col-md-4">
                     <div class="card">
                         <h3 class="card-header text-center">Create User</h3>

@@ -136,6 +136,8 @@ class CrudUserController extends Controller
         }
 
         $user->name = $request->name;
+        $user->like = $request->like;
+        $user->github = $request->github;
         $user->email = $request->email;
 
         if ($request->password) {
