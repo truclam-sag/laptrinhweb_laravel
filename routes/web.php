@@ -29,8 +29,8 @@ Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
 
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
-Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
 
+Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
 Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name('user.postUpdateUser');
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');

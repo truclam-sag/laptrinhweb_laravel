@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GrahamCampbell\ResultType\Success;
 use Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
@@ -57,52 +58,58 @@ class CrudUserController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
 
-        $data = $request->all();
-        $check = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password'])
+        User::create([
+            'name' => $request['name'],
+            'phone' => $request['phone'],
+            'address' => $request['address'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password'])
         ]);
 
-        return redirect("login");
+        return redirect()->route('login')->with('success', 'đăng ký thành công');
     }
 
     /**
      * View user detail page
      */
-   
-    public function readUser($id) {
+
+    public function readUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
         return view('users.read', ['user' => $user]);
     }
-    
+
 
     /**
      * Delete user by id
      */
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
-    
+
         $user->delete();
-    
+
         return redirect("list")->withSuccess('User deleted successfully!');
     }
-    
+
 
     /**
      * Form update user page
      */
-    public function updateUser($id) {
+    public function updateUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
@@ -113,49 +120,51 @@ class CrudUserController extends Controller
     /**
      * Submit form update user
      */
-    public function postUpdateUser(Request $request, $id) {
+    public function postUpdateUser(Request $request, $id)
+    {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6', // Không bắt buộc nhập lại mật khẩu
         ]);
-    
+
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
-    
+
         $user->name = $request->name;
         $user->email = $request->email;
-    
-        if ($request->password) { 
+
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
-    
+
         $user->save();
-    
+
         return redirect("list")->withSuccess('User updated successfully!');
     }
 
-    
+
 
     /**
      * List of users
      */
-    
-     public function listUser()
-     {
-  
-             $users = User :: all();
-             return view('users.list', ['users' => $users]);
 
-     }
+    public function listUser()
+    {
+
+        $users = User::all();
+        return view('users.list', ['users' => $users]);
+
+    }
 
 
     /**
      * Sign out
      */
-    public function signOut() {
+    public function signOut()
+    {
         Session::flush();
         Auth::logout();
 
