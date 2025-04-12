@@ -58,14 +58,16 @@ class CrudUserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-
+            'like' => 'required',
+            'github' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
 
         User::create([
             'name' => $request['name'],
-
+            'like' => $request['like'],
+            'github' => $request['github'],
             'email' => $request['email'],
             'password' => Hash::make($request['password'])
         ]);
@@ -122,6 +124,8 @@ class CrudUserController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'like' => 'required',
+            'github' => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6', // Không bắt buộc nhập lại mật khẩu
         ]);
