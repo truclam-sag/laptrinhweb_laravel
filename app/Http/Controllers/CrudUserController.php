@@ -58,16 +58,14 @@ class CrudUserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
+
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
 
         User::create([
             'name' => $request['name'],
-            'phone' => $request['phone'],
-            'address' => $request['address'],
+
             'email' => $request['email'],
             'password' => Hash::make($request['password'])
         ]);
