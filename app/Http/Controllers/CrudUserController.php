@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Hash;
+
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -142,13 +143,15 @@ class CrudUserController extends Controller
     /**
      * List of users
      */
-    
+    const MAX_RECORDS = 10;
      public function listUser()
      {
-  
-             $users = User :: all();
-             return view('users.list', ['users' => $users]);
+        if(Auth::check()){
+            $users = User::paginate(self::MAX_RECORDS);
+            return view('users.list', ['users' => $users]);
+        }
 
+        return redirect("login")->withSuccess('You are not allowed to access');
      }
 
 

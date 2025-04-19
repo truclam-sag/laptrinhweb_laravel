@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
 
@@ -35,7 +36,8 @@ Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
 
-
+//Roles
+Route::get('role', [RoleController::class, 'role'])->name('user.role');
 
 Route::get('/', function () {
     return view('welcome');
