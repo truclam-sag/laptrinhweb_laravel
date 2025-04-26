@@ -10,6 +10,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Order</th>
                             <th>Role</th>
                             <th>Action</th>
                         </tr>
@@ -20,6 +21,18 @@
                                 <th>{{ $user->id }}</th>
                                 <th>{{ $user->name }}</th>
                                 <th>{{ $user->email }}</th>
+
+                                <th>
+                                @if($user->orders->count() > 0)
+                                <a href="{{ route('user.orders', ['user' => $user->id]) }}">
+                                    {{ $user->orders->count() }} orders
+                                </a>
+                                @else
+                                <span class="text-muted">No orders</span>
+                                @endif
+
+                                </th>
+
                                 <th>
                                     @foreach($user->roles as $role)
                                         <a href="{{ route('user.role', ['id' => $role->id]) }}">
@@ -27,6 +40,7 @@
                                         </a>
                                     @endforeach
                                 </th>
+                               
                                 <th>
                                     <a href="{{ route('user.readUser', ['id' => $user->id]) }}">View</a> |
                                     <a href="{{ route('user.updateUser', ['id' => $user->id]) }}">Edit</a> |

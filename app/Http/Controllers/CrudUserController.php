@@ -75,35 +75,38 @@ class CrudUserController extends Controller
     /**
      * View user detail page
      */
-   
-    public function readUser($id) {
+
+    public function readUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
         return view('users.read', ['user' => $user]);
     }
-    
+
 
     /**
      * Delete user by id
      */
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
-    
+
         $user->delete();
-    
+
         return redirect("list")->withSuccess('User deleted successfully!');
     }
-    
+
 
     /**
      * Form update user page
      */
-    public function updateUser($id) {
+    public function updateUser($id)
+    {
         $user = User::find($id);
         if (!$user) {
             abort(404);
@@ -114,51 +117,62 @@ class CrudUserController extends Controller
     /**
      * Submit form update user
      */
-    public function postUpdateUser(Request $request, $id) {
+    public function postUpdateUser(Request $request, $id)
+    {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6', // Không bắt buộc nhập lại mật khẩu
         ]);
-    
+
         $user = User::find($id);
         if (!$user) {
             abort(404);
         }
-    
+
         $user->name = $request->name;
         $user->email = $request->email;
-    
-        if ($request->password) { 
+
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
-    
+
         $user->save();
-    
+
         return redirect("list")->withSuccess('User updated successfully!');
     }
 
-    
+
 
     /**
      * List of users
      */
     const MAX_RECORDS = 10;
-     public function listUser()
-     {
-        if(Auth::check()){
-            $users = User::paginate(self::MAX_RECORDS);
+    public function listUser()
+    {
+        if (Auth::check()) {
+            $users = User::with(['roles', 'orders'])->paginate(self::MAX_RECORDS);  // <-- Thêm with()
             return view('users.list', ['users' => $users]);
         }
 
         return redirect("login")->withSuccess('You are not allowed to access');
-     }
+    }
+
+    /**
+     * Detail order
+     */
+    public function showOrders(User $user)
+    {
+        $user->load('orders.orderDetail.product'); // load cả chi tiết đơn và sản phẩm
+        return view('orther.order', compact('user'));
+    }
 
 
     /**
      * Sign out
      */
-    public function signOut() {
+    public function signOut()
+    {
         Session::flush();
         Auth::logout();
 

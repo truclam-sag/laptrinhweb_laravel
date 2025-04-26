@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
 
@@ -38,6 +39,11 @@ Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user
 
 //Roles
 Route::get('role', [RoleController::class, 'role'])->name('user.role');
+
+//orther
+Route::get('/users/{user}/orders', [OrderController::class, 'listByUser'])->name('user.orders');
+;
+
 
 Route::get('/', function () {
     return view('welcome');
